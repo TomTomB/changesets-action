@@ -229,8 +229,10 @@ export async function runPublish({
     let changelog = await fs.readFile(changelogFileName, "utf8");
 
     let changelogEntry = getChangelogEntry(changelog, pkg.packageJson.version);
+    let entryWithPackage = `## ${pkg.packageJson.name}@${pkg.packageJson.version}`;
+    let fullEntry = `${entryWithPackage}\n\n${changelogEntry.content}`;
 
-    changelogs.push(changelogEntry.content);
+    changelogs.push(fullEntry);
   }
 
   const slackMessageJson = {
