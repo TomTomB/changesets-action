@@ -1,5 +1,11 @@
 # @changesets/action
 
+## 1.4.8
+
+### Patch Changes
+
+- [`b8a4e47`](https://github.com/changesets/action/commit/b8a4e47b187862671dbaeecf6a3d51796dfa2de5) Thanks [@TomTomB](https://github.com/TomTomB)! - logging
+
 ## 1.4.7
 
 ### Patch Changes
