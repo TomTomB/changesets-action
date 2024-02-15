@@ -1,5 +1,11 @@
 # @changesets/action
 
+## 1.4.9
+
+### Patch Changes
+
+- [`c10c1ce`](https://github.com/changesets/action/commit/c10c1ce0a97e6e666ed2be39cad239c8bc6a1a7b) Thanks [@TomTomB](https://github.com/TomTomB)! - testing with dummy packages
+
 ## 1.4.8
 
 ### Patch Changes
