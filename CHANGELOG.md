@@ -1,5 +1,11 @@
 # @changesets/action
 
+## 1.4.10
+
+### Patch Changes
+
+- [`ea2ebb4`](https://github.com/changesets/action/commit/ea2ebb463651cffb56d3f400f64e41a5166ab031) Thanks [@TomTomB](https://github.com/TomTomB)! - fix path
+
 ## 1.4.9
 
 ### Patch Changes
