@@ -208,14 +208,14 @@ export async function runPublish({
 
   const dummyPackages: Package[] = [
     {
-      dir: `${cwd}/ethdk/libs/cdk`,
+      dir: `${cwd}/libs/cdk`,
       packageJson: {
         name: "@ethlete/cdk",
         version: "4.9.0",
       },
     },
     {
-      dir: `${cwd}/ethdk/libs/query`,
+      dir: `${cwd}/libs/query`,
       packageJson: {
         name: "@ethlete/query",
         version: "5.5.0",
