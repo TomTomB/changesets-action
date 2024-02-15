@@ -206,7 +206,30 @@ export async function runPublish({
 
   const changelogs: string[] = [];
 
-  for (const pkg of packages) {
+  const dummyPackages: Package[] = [
+    {
+      dir: `${cwd}/ethdk/libs/cdk`,
+      packageJson: {
+        name: "@ethlete/cdk",
+        version: "4.9.0",
+      },
+    },
+    {
+      dir: `${cwd}/ethdk/libs/query`,
+      packageJson: {
+        name: "@ethlete/query",
+        version: "5.5.0",
+      },
+    },
+  ];
+
+  core.info(cwd);
+
+  fs.readdirSync(cwd).forEach((file) => {
+    core.info(file);
+  });
+
+  for (const pkg of dummyPackages) {
     let changelogFileName = path.join(pkg.dir, "CHANGELOG.md");
 
     let changelog = await fs.readFile(changelogFileName, "utf8");
