@@ -38,6 +38,8 @@ outputs:
     description: A boolean about whether there were changesets. Useful if you want to create your own publishing functionality.
   pullRequestNumber:
     description: The pull request number that was created or updated
+  publishedReleaseNotes:
+    description: The release notes
 branding:
   icon: "package"
   color: "blue"

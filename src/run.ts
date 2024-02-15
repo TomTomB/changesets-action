@@ -1,22 +1,22 @@
-import { exec, getExecOutput } from "@actions/exec";
-import { GitHub, getOctokitOptions } from "@actions/github/lib/utils";
-import * as github from "@actions/github";
 import * as core from "@actions/core";
-import fs from "fs-extra";
-import { getPackages, Package } from "@manypkg/get-packages";
-import path from "path";
-import * as semver from "semver";
+import { exec, getExecOutput } from "@actions/exec";
+import * as github from "@actions/github";
+import { GitHub, getOctokitOptions } from "@actions/github/lib/utils";
 import { PreState } from "@changesets/types";
-import {
-  getChangelogEntry,
-  getChangedPackages,
-  sortTheThings,
-  getVersionsByDirectory,
-} from "./utils";
+import { Package, getPackages } from "@manypkg/get-packages";
+import { throttling } from "@octokit/plugin-throttling";
+import fs from "fs-extra";
+import path from "path";
+import resolveFrom from "resolve-from";
+import * as semver from "semver";
 import * as gitUtils from "./gitUtils";
 import readChangesetState from "./readChangesetState";
-import resolveFrom from "resolve-from";
-import { throttling } from "@octokit/plugin-throttling";
+import {
+  getChangedPackages,
+  getChangelogEntry,
+  getVersionsByDirectory,
+  sortTheThings,
+} from "./utils";
 
 // GitHub Issues/PRs messages have a max size limit on the
 // message body payload.
@@ -109,9 +109,11 @@ type PublishResult =
   | {
       published: true;
       publishedPackages: PublishedPackage[];
+      publishedReleaseNotes: string;
     }
   | {
       published: false;
+      publishedReleaseNotes: string; // for testing
     };
 
 export async function runPublish({
@@ -198,10 +200,30 @@ export async function runPublish({
         name: pkg.packageJson.name,
         version: pkg.packageJson.version,
       })),
+      publishedReleaseNotes: "",
     };
   }
 
-  return { published: false };
+  const changelogs: string[] = [];
+
+  for (const pkg of packages) {
+    let changelogFileName = path.join(pkg.dir, "CHANGELOG.md");
+
+    let changelog = await fs.readFile(changelogFileName, "utf8");
+
+    let changelogEntry = getChangelogEntry(changelog, pkg.packageJson.version);
+
+    if (changelogEntry) {
+      changelogs.push(changelogEntry.content);
+    }
+  }
+
+  core.info("Release: \n" + changelogs.join("\n"));
+
+  return {
+    published: false,
+    publishedReleaseNotes: "Release: \n" + changelogs.join("\n"),
+  };
 }
 
 const requireChangesetsCliPkgJson = (cwd: string) => {
