@@ -1,5 +1,11 @@
 # @changesets/action
 
+## 1.4.12
+
+### Patch Changes
+
+- [`bba64b6`](https://github.com/changesets/action/commit/bba64b67c1768673a4e0aaf7a98399d17518bb3c) Thanks [@TomTomB](https://github.com/TomTomB)! - output slack format
+
 ## 1.4.11
 
 ### Patch Changes
