@@ -218,7 +218,12 @@ export async function runPublish({
     }
   }
 
-  return { published: false, publishedReleaseNotes: changelogs.join("\n") };
+  core.info("Release: \n" + changelogs.join("\n"));
+
+  return {
+    published: false,
+    publishedReleaseNotes: "Release: \n" + changelogs.join("\n"),
+  };
 }
 
 const requireChangesetsCliPkgJson = (cwd: string) => {
