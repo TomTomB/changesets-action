@@ -242,11 +242,13 @@ export async function runPublish({
     core.info(changelogEntry.highestLevel.toString());
   }
 
-  core.info("Release: \n" + changelogs.join("\n"));
+  const logs = changelogs.join("\n").replace(/"/g, '\\"');
+
+  core.info("Release: \n" + logs);
 
   return {
     published: false,
-    publishedReleaseNotes: "Release: \n" + changelogs.join("\n"),
+    publishedReleaseNotes: logs,
   };
 }
 
