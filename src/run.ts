@@ -113,7 +113,7 @@ type PublishResult =
     }
   | {
       published: false;
-      publishedReleaseNotes: string; // for testing
+      publishedReleaseNotes: any; // for testing
     };
 
 export async function runPublish({
@@ -223,12 +223,6 @@ export async function runPublish({
     },
   ];
 
-  core.info(cwd);
-
-  fs.readdirSync(cwd).forEach((file) => {
-    core.info(file);
-  });
-
   for (const pkg of dummyPackages) {
     let changelogFileName = path.join(pkg.dir, "CHANGELOG.md");
 
@@ -237,18 +231,31 @@ export async function runPublish({
     let changelogEntry = getChangelogEntry(changelog, pkg.packageJson.version);
 
     changelogs.push(changelogEntry.content);
-
-    core.info(path.join(pkg.dir, "CHANGELOG.md"));
-    core.info(changelogEntry.highestLevel.toString());
   }
 
-  const logs = changelogs.join("\n").replace(/"/g, '\\"');
-
-  core.info("Release: \n" + logs);
+  const slackMessageJson = {
+    text: `*New Release*`,
+    blocks: [
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: `*New Release*`,
+        },
+      },
+      ...changelogs.map((changelog) => ({
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: changelog,
+        },
+      })),
+    ],
+  };
 
   return {
     published: false,
-    publishedReleaseNotes: logs,
+    publishedReleaseNotes: slackMessageJson,
   };
 }
 

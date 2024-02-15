@@ -98,7 +98,10 @@ const getOptionalInput = (name: string) => core.getInput(name) || undefined;
         );
       }
 
-      core.setOutput("publishedReleaseNotes", result.publishedReleaseNotes);
+      core.setOutput(
+        "publishedReleaseNotes",
+        JSON.stringify(result.publishedReleaseNotes)
+      );
 
       return;
     }
