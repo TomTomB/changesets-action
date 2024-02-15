@@ -1,5 +1,11 @@
 # @changesets/action
 
+## 1.4.11
+
+### Patch Changes
+
+- [`c51f67a`](https://github.com/changesets/action/commit/c51f67a7a5bf84e559d4111c1cb81a65075a1632) Thanks [@TomTomB](https://github.com/TomTomB)! - release notes json safe
+
 ## 1.4.10
 
 ### Patch Changes
