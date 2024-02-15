@@ -1,8 +1,8 @@
 import * as core from "@actions/core";
 import fs from "fs-extra";
 import * as gitUtils from "./gitUtils";
-import { runPublish, runVersion } from "./run";
 import readChangesetState from "./readChangesetState";
+import { runPublish, runVersion } from "./run";
 
 const getOptionalInput = (name: string) => core.getInput(name) || undefined;
 
@@ -97,6 +97,9 @@ const getOptionalInput = (name: string) => core.getInput(name) || undefined;
           JSON.stringify(result.publishedPackages)
         );
       }
+
+      core.setOutput("publishedReleaseNotes", result.publishedReleaseNotes);
+
       return;
     }
     case hasChangesets && !hasNonEmptyChangesets:

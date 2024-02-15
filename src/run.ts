@@ -213,9 +213,10 @@ export async function runPublish({
 
     let changelogEntry = getChangelogEntry(changelog, pkg.packageJson.version);
 
-    if (changelogEntry) {
-      changelogs.push(changelogEntry.content);
-    }
+    changelogs.push(changelogEntry.content);
+
+    core.info(path.join(pkg.dir, "CHANGELOG.md"));
+    core.info(changelogEntry.highestLevel.toString());
   }
 
   core.info("Release: \n" + changelogs.join("\n"));
