@@ -1,5 +1,11 @@
 # @changesets/action
 
+## 1.4.15
+
+### Patch Changes
+
+- [`e4946da`](https://github.com/changesets/action/commit/e4946daeea099fd5f5a313660a8ae3ecb426a107) Thanks [@TomTomB](https://github.com/TomTomB)! - finalize
+
 ## 1.4.14
 
 ### Patch Changes
