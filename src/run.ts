@@ -110,11 +110,10 @@ type PublishResult =
   | {
       published: true;
       publishedPackages: PublishedPackage[];
-      publishedReleaseNotes: string;
+      publishedReleaseNotes: any;
     }
   | {
       published: false;
-      publishedReleaseNotes: any; // for testing
     };
 
 export async function runPublish({
@@ -195,74 +194,59 @@ export async function runPublish({
   }
 
   if (releasedPackages.length) {
+    const changelogs: any[] = [];
+
+    for (const pkg of releasedPackages) {
+      let changelogFileName = path.join(pkg.dir, "CHANGELOG.md");
+
+      let changelog = await fs.readFile(changelogFileName, "utf8");
+
+      let changelogEntry = getChangelogEntry(
+        changelog,
+        pkg.packageJson.version
+      );
+
+      const titleBlock = {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: `*${pkg.packageJson.name}@${pkg.packageJson.version}*`,
+        },
+      };
+
+      const res = await markdownToBlocks(
+        changelogEntry.content.replace(/###/g, "")
+      );
+
+      changelogs.push(titleBlock, ...res);
+    }
+
+    const slackMessageJson = {
+      text: `*New Release*`,
+      blocks: [
+        {
+          type: "section",
+          text: {
+            type: "mrkdwn",
+            text: `*New Release*`,
+          },
+        },
+        ...changelogs,
+      ],
+    };
+
     return {
       published: true,
       publishedPackages: releasedPackages.map((pkg) => ({
         name: pkg.packageJson.name,
         version: pkg.packageJson.version,
       })),
-      publishedReleaseNotes: "",
+      publishedReleaseNotes: slackMessageJson,
     };
   }
-
-  const changelogs: any[] = [];
-
-  const dummyPackages: Package[] = [
-    {
-      dir: `${cwd}/libs/cdk`,
-      packageJson: {
-        name: "@ethlete/cdk",
-        version: "4.9.0",
-      },
-    },
-    {
-      dir: `${cwd}/libs/query`,
-      packageJson: {
-        name: "@ethlete/query",
-        version: "5.5.0",
-      },
-    },
-  ];
-
-  for (const pkg of dummyPackages) {
-    let changelogFileName = path.join(pkg.dir, "CHANGELOG.md");
-
-    let changelog = await fs.readFile(changelogFileName, "utf8");
-
-    let changelogEntry = getChangelogEntry(changelog, pkg.packageJson.version);
-
-    const titleBlock = {
-      type: "section",
-      text: {
-        type: "mrkdwn",
-        text: `*${pkg.packageJson.name}@${pkg.packageJson.version}*`,
-      },
-    };
-
-    const res = await markdownToBlocks(
-      changelogEntry.content.replace(/###/g, "")
-    );
-
-    changelogs.push(titleBlock, ...res);
-  }
-
-  const slackMessageJson = {
-    text: `*New Release*`,
-    blocks: [
-      {
-        type: "section",
-        text: {
-          type: "mrkdwn",
-          text: `*New Release*`,
-        },
-      },
-      ...changelogs,
-    ],
-  };
 
   return {
     published: false,
-    publishedReleaseNotes: slackMessageJson,
   };
 }
 
