@@ -1,5 +1,11 @@
 # @changesets/action
 
+## 1.4.13
+
+### Patch Changes
+
+- [`1faef99`](https://github.com/changesets/action/commit/1faef99aefc0cee2d069ad750eaf043dc8eb419d) Thanks [@TomTomB](https://github.com/TomTomB)! - md to slack
+
 ## 1.4.12
 
 ### Patch Changes
