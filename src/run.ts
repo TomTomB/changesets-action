@@ -230,12 +230,20 @@ export async function runPublish({
     let changelog = await fs.readFile(changelogFileName, "utf8");
 
     let changelogEntry = getChangelogEntry(changelog, pkg.packageJson.version);
-    let entryWithPackage = `## ${pkg.packageJson.name}@${pkg.packageJson.version}`;
-    let fullEntry = `${entryWithPackage}\n\n${changelogEntry.content}`;
 
-    const res = await markdownToBlocks(fullEntry);
+    const titleBlock = {
+      type: "section",
+      text: {
+        type: "mrkdwn",
+        text: `*${pkg.packageJson.name}@${pkg.packageJson.version}*`,
+      },
+    };
 
-    changelogs.push(...res);
+    const res = await markdownToBlocks(
+      changelogEntry.content.replace(/##/g, "")
+    );
+
+    changelogs.push(titleBlock, ...res);
   }
 
   const slackMessageJson = {
