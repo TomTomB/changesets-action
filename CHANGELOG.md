@@ -1,5 +1,11 @@
 # @changesets/action
 
+## 1.4.14
+
+### Patch Changes
+
+- [`b1070d1`](https://github.com/changesets/action/commit/b1070d177ff639db08f9420f941141578f3709a8) Thanks [@TomTomB](https://github.com/TomTomB)! - format
+
 ## 1.4.13
 
 ### Patch Changes
