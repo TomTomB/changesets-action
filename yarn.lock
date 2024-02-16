@@ -1637,6 +1637,20 @@
   dependencies:
     "@sinonjs/commons" "^3.0.0"
 
+"@slack/types@^2.1.0":
+  version "2.11.0"
+  resolved "https://registry.yarnpkg.com/@slack/types/-/types-2.11.0.tgz#948c556081c3db977dfa8433490cc2ff41f47203"
+  integrity sha512-UlIrDWvuLaDly3QZhCPnwUSI/KYmV1N9LyhuH6EDKCRS1HWZhyTG3Ja46T3D0rYfqdltKYFXbJSSRPwZpwO0cQ==
+
+"@tryfabric/mack@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@tryfabric/mack/-/mack-1.2.1.tgz#21a2916466c93c76ce644cb41401e6bfa4bb5f06"
+  integrity sha512-qQKj3l4x/7fWPHyk3zO3hPK2NUTH8AINJnVbdBYforWpm+6RDzp22gFIE66BJd2z7EFmt7F9aUOyZTKwmxiXrA==
+  dependencies:
+    "@slack/types" "^2.1.0"
+    fast-xml-parser "^4.0.6"
+    marked "^4.0.12"
+
 "@types/babel__core@^7.1.14":
   version "7.20.0"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.20.0.tgz#61bc5a4cae505ce98e1e36c5445e4bee060d8891"
@@ -2600,6 +2614,13 @@ fast-json-stable-stringify@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/fast-json-stable-stringify/-/fast-json-stable-stringify-2.1.0.tgz#874bf69c6f404c2b5d99c481341399fd55892633"
   integrity sha512-lhd/wF+Lk98HZoTCtlVraHtfh5XYijIjalXck7saUtuanSDyLMxnHhSXEDJqHxD7msR8D0uCmqlkwjCV8xvwHw==
+
+fast-xml-parser@^4.0.6:
+  version "4.3.4"
+  resolved "https://registry.yarnpkg.com/fast-xml-parser/-/fast-xml-parser-4.3.4.tgz#385cc256ad7bbc57b91515a38a22502a9e1fca0d"
+  integrity sha512-utnwm92SyozgA3hhH2I8qldf2lBqm6qHOICawRNRFu1qMe3+oqr+GcXjGqTmXTMGE5T4eC03kr/rlh5C1IRdZA==
+  dependencies:
+    strnum "^1.0.5"
 
 fastq@^1.6.0:
   version "1.15.0"
@@ -3794,6 +3815,11 @@ markdown-table@^1.1.0:
   resolved "https://registry.yarnpkg.com/markdown-table/-/markdown-table-1.1.3.tgz#9fcb69bcfdb8717bfd0398c6ec2d93036ef8de60"
   integrity sha512-1RUZVgQlpJSPWYbFSpmudq5nHY1doEIv89gBtF0s4gW1GF2XorxcA/70M5vq7rLv0a6mhOUccRsqkwhwLCIQ2Q==
 
+marked@^4.0.12:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/marked/-/marked-4.3.0.tgz#796362821b019f734054582038b116481b456cf3"
+  integrity sha512-PRsaiG84bK+AMvxziE/lCFss8juXjNaWzVbN5tXAm4XjeaS9NAHhop+PjQxz2A9h8Q4M/xGmzP8vqNwy6JeK0A==
+
 mdast-util-compact@^1.0.0:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/mdast-util-compact/-/mdast-util-compact-1.0.4.tgz#d531bb7667b5123abf20859be086c4d06c894593"
@@ -4678,6 +4704,11 @@ strip-json-comments@^3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-3.1.1.tgz#31f1281b3832630434831c310c01cccda8cbe006"
   integrity sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==
+
+strnum@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/strnum/-/strnum-1.0.5.tgz#5c4e829fe15ad4ff0d20c3db5ac97b73c9b072db"
+  integrity sha512-J8bbNyKKXl5qYcR36TIO8W3mVGVHrmmxsd5PAItGkmyzwJvybiw2IVq5nqd0i4LSNSkB/sx9VHllbfFdr9k1JA==
 
 supports-color@^5.3.0:
   version "5.5.0"

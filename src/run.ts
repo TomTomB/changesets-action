@@ -5,6 +5,7 @@ import { GitHub, getOctokitOptions } from "@actions/github/lib/utils";
 import { PreState } from "@changesets/types";
 import { Package, getPackages } from "@manypkg/get-packages";
 import { throttling } from "@octokit/plugin-throttling";
+import { markdownToBlocks } from "@tryfabric/mack";
 import fs from "fs-extra";
 import path from "path";
 import resolveFrom from "resolve-from";
@@ -204,7 +205,7 @@ export async function runPublish({
     };
   }
 
-  const changelogs: string[] = [];
+  const changelogs: any[] = [];
 
   const dummyPackages: Package[] = [
     {
@@ -232,7 +233,9 @@ export async function runPublish({
     let entryWithPackage = `## ${pkg.packageJson.name}@${pkg.packageJson.version}`;
     let fullEntry = `${entryWithPackage}\n\n${changelogEntry.content}`;
 
-    changelogs.push(fullEntry);
+    const res = await markdownToBlocks(fullEntry);
+
+    changelogs.push(...res);
   }
 
   const slackMessageJson = {
@@ -245,13 +248,7 @@ export async function runPublish({
           text: `*New Release*`,
         },
       },
-      ...changelogs.map((changelog) => ({
-        type: "section",
-        text: {
-          type: "mrkdwn",
-          text: changelog,
-        },
-      })),
+      ...changelogs,
     ],
   };
 
