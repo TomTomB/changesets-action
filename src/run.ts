@@ -240,7 +240,7 @@ export async function runPublish({
     };
 
     const res = await markdownToBlocks(
-      changelogEntry.content.replace(/##/g, "")
+      changelogEntry.content.replace(/###/g, "")
     );
 
     changelogs.push(titleBlock, ...res);
