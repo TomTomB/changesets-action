@@ -197,31 +197,39 @@ export async function runPublish({
     const changelogs: any[] = [];
 
     for (const pkg of releasedPackages) {
-      let changelogFileName = path.join(pkg.dir, "CHANGELOG.md");
+      try {
+        let changelogFileName = path.join(pkg.dir, "CHANGELOG.md");
 
-      let changelog = await fs.readFile(changelogFileName, "utf8");
+        let changelog = await fs.readFile(changelogFileName, "utf8");
 
-      let changelogEntry = getChangelogEntry(
-        changelog,
-        pkg.packageJson.version
-      );
+        let changelogEntry = getChangelogEntry(
+          changelog,
+          pkg.packageJson.version
+        );
 
-      const titleBlock = {
-        type: "section",
-        text: {
-          type: "mrkdwn",
-          text: `*${pkg.packageJson.name}@${pkg.packageJson.version}*`,
-        },
-      };
+        const titleBlock = {
+          type: "section",
+          text: {
+            type: "mrkdwn",
+            text: `*${pkg.packageJson.name}@${pkg.packageJson.version}*`,
+          },
+        };
 
-      const res = await markdownToBlocks(
-        changelogEntry.content.replace(/###/g, "")
-      );
+        const res = await markdownToBlocks(
+          changelogEntry.content.replace(/###/g, "")
+        );
 
-      changelogs.push(titleBlock, ...res);
+        changelogs.push(titleBlock, ...res);
+      } catch (error) {
+        core.error(
+          `Error parsing changelog for ${pkg.packageJson.name}. Is the changelog file missing?`
+        );
+      }
     }
 
     const slackMessageJson = {
+      unfurl_links: false,
+      unfurl_media: false,
       text: `*New Release*`,
       blocks: [
         {
