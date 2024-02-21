@@ -1,5 +1,11 @@
 # @changesets/action
 
+## 1.4.16
+
+### Patch Changes
+
+- [`650fbf3`](https://github.com/changesets/action/commit/650fbf3b719bb3981851873951e87131b1584751) Thanks [@TomTomB](https://github.com/TomTomB)! - do not unfurl links or media in slack message
+
 ## 1.4.15
 
 ### Patch Changes
