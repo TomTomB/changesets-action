@@ -227,21 +227,16 @@ export async function runPublish({
       }
     }
 
-    const slackMessageJson = {
-      unfurl_links: false,
-      unfurl_media: false,
-      text: `*New Release*`,
-      blocks: [
-        {
-          type: "section",
-          text: {
-            type: "mrkdwn",
-            text: `*New Release*`,
-          },
+    const blocks = [
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: `*New Release*`,
         },
-        ...changelogs,
-      ],
-    };
+      },
+      ...changelogs,
+    ];
 
     return {
       published: true,
@@ -249,7 +244,7 @@ export async function runPublish({
         name: pkg.packageJson.name,
         version: pkg.packageJson.version,
       })),
-      publishedReleaseNotes: slackMessageJson,
+      publishedReleaseNotes: blocks,
     };
   }
 

@@ -1,5 +1,11 @@
 # @changesets/action
 
+## 1.4.17
+
+### Patch Changes
+
+- only return slack blocks
+
 ## 1.4.16
 
 ### Patch Changes

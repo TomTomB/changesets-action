@@ -1,6 +1,6 @@
 {
   "name": "@changesets/action",
-  "version": "1.4.16",
+  "version": "1.4.17",
   "main": "dist/index.js",
   "license": "MIT",
   "devDependencies": {
@@ -58,5 +58,6 @@
     "**/@octokit/core": "4.2.0",
     "trim": "^0.0.3",
     "y18n": "^4.0.1"
-  }
+  },
+  "packageManager": "yarn@1.22.21+sha1.1959a18351b811cdeedbd484a8f86c3cc3bbaf72"
 }
