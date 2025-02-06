@@ -1,5 +1,11 @@
 # @changesets/action
 
+## 1.4.18
+
+### Patch Changes
+
+- No notes
+
 ## 1.4.17
 
 ### Patch Changes

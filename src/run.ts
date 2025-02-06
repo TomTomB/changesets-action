@@ -248,9 +248,20 @@ export async function runPublish({
     };
   }
 
+  const blocks = [
+    {
+      type: "section",
+      text: {
+        type: "mrkdwn",
+        text: `*No new Release. Time to move on...*`,
+      },
+    },
+  ];
+
   return {
     published: false,
-  };
+    publishedReleaseNotes: blocks,
+  } as any;
 }
 
 const requireChangesetsCliPkgJson = (cwd: string) => {
