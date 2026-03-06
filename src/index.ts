@@ -133,7 +133,7 @@ const getOptionalInput = (name: string) => core.getInput(name) || undefined;
 
       core.setOutput(
         "publishedReleaseNotes",
-        JSON.stringify(result.publishedReleaseNotes)
+        JSON.stringify(result.published ? result.publishedReleaseNotes : null)
       );
 
       return;
