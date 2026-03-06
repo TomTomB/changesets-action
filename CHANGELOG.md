@@ -1,5 +1,11 @@
 # @changesets/action
 
+## 1.7.2
+
+### Patch Changes
+
+- [`c0b45bd`](https://github.com/changesets/action/commit/c0b45bdfde0a51fdd563d9efd80a25afd2b365c2) Thanks [@TomTomB](https://github.com/TomTomB)! - Version bump
+
 ## 1.7.1
 
 ### Patch Changes
