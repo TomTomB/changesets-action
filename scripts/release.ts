@@ -26,9 +26,19 @@ process.chdir(path.join(import.meta.dirname, ".."));
     throw new Error(`git ls-remote exited with ${exitCode}:\n${stderr}`);
   }
 
+  await exec("yarn", ["build"]);
+
   await exec("git", ["checkout", "--detach"]);
   await exec("git", ["add", "--force", "dist"]);
-  await exec("git", ["commit", "-m", tag]);
+
+  const { exitCode: commitExitCode } = await getExecOutput(
+    "git",
+    ["commit", "-m", tag],
+    { ignoreReturnCode: true }
+  );
+  if (commitExitCode !== 0 && commitExitCode !== 1) {
+    throw new Error(`git commit failed with exit code ${commitExitCode}`);
+  }
 
   await exec("changeset", ["tag"]);
 
