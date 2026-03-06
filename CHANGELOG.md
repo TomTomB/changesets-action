@@ -1,5 +1,11 @@
 # @changesets/action
 
+## 1.7.1
+
+### Patch Changes
+
+- [`a864267`](https://github.com/changesets/action/commit/a8642678063471aa311c9cf87ec01278378ed108) Thanks [@TomTomB](https://github.com/TomTomB)! - Sync with upstream
+
 ## 1.7.0
 
 ### Minor Changes
