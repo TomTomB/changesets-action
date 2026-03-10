@@ -24,10 +24,13 @@ inputs:
   title:
     description: The pull request title. Default to `Version Packages`
     required: false
-  slack-title:
+  slackTitle:
     description: "The title shown in the Slack release notification. Defaults to `New Release`"
     required: false
     default: "New Release"
+  slackChannel:
+    description: "The Slack channel ID or name to post the release notification to (e.g. `C1234567890` or `#releases`). If not set, the channel must be configured in the Slack app or workflow."
+    required: false
   setupGitUser:
     description: Sets up the git user for commits as `"github-actions[bot]"`. Default to `true`
     required: false
@@ -57,8 +60,8 @@ outputs:
     description: A boolean about whether there were changesets. Useful if you want to create your own publishing functionality.
   pullRequestNumber:
     description: The pull request number that was created or updated
-  publishedReleaseNotes:
-    description: The release notes
+  slackPayload:
+    description: A ready-to-use Slack API payload (channel, title, blocks) for use with slackapi/slack-github-action
 branding:
   icon: "package"
   color: "blue"

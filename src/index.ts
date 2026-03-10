@@ -121,7 +121,8 @@ const getOptionalInput = (name: string) => core.getInput(name) || undefined;
         octokit,
         createGithubReleases: core.getBooleanInput("createGithubReleases"),
         cwd,
-        slackTitle: getOptionalInput("slack-title"),
+        slackTitle: getOptionalInput("slackTitle"),
+        slackChannel: getOptionalInput("slackChannel"),
       });
 
       if (result.published) {
@@ -133,8 +134,8 @@ const getOptionalInput = (name: string) => core.getInput(name) || undefined;
       }
 
       core.setOutput(
-        "publishedReleaseNotes",
-        JSON.stringify(result.published ? result.publishedReleaseNotes : null)
+        "slackPayload",
+        JSON.stringify(result.published ? result.slackPayload : null)
       );
 
       return;

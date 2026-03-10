@@ -136,6 +136,7 @@ type PublishOptions = {
   git: Git;
   cwd: string;
   slackTitle?: string;
+  slackChannel?: string;
 };
 
 type PublishedPackage = { name: string; version: string };
@@ -144,7 +145,7 @@ type PublishResult =
   | {
       published: true;
       publishedPackages: PublishedPackage[];
-      publishedReleaseNotes: any;
+      slackPayload: any;
     }
   | {
       published: false;
@@ -158,6 +159,7 @@ export async function runPublish({
   createGithubReleases,
   cwd,
   slackTitle = "New Release",
+  slackChannel,
 }: PublishOptions): Promise<PublishResult> {
   let [publishCommand, ...publishArgs] = script.split(/\s+/);
 
@@ -266,7 +268,8 @@ export async function runPublish({
         name: packageJson.name,
         version: packageJson.version,
       })),
-      publishedReleaseNotes: {
+      slackPayload: {
+        ...(slackChannel ? { channel: slackChannel } : {}),
         unfurl_links: false,
         unfurl_media: false,
         text: slackTitle,
