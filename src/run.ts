@@ -3,7 +3,6 @@ import { exec, getExecOutput } from "@actions/exec";
 import * as github from "@actions/github";
 import type { PreState } from "@changesets/types";
 import { type Package, getPackages } from "@manypkg/get-packages";
-import { markdownToBlocks } from "@tryfabric/mack";
 import fs from "node:fs/promises";
 import { createRequire } from "node:module";
 import path from "node:path";
@@ -20,6 +19,76 @@ import {
 } from "./utils.ts";
 
 const require = createRequire(import.meta.url);
+
+// Converts a markdown string to Slack mrkdwn format.
+// Slack natively renders triple-backtick code blocks, so no special handling is needed for them.
+function markdownToSlackMrkdwn(markdown: string): string {
+  // Protect code blocks and inline code from other replacements
+  const codeBlocks: string[] = [];
+  let result = markdown.replace(/```[\s\S]*?```/g, (match) => {
+    codeBlocks.push(match);
+    return `\x00CB${codeBlocks.length - 1}\x00`;
+  });
+
+  const inlineCodes: string[] = [];
+  result = result.replace(/`[^`\n]+`/g, (match) => {
+    inlineCodes.push(match);
+    return `\x00IC${inlineCodes.length - 1}\x00`;
+  });
+
+  // Headers → bold
+  result = result.replace(/^#{1,6}\s+(.+)$/gm, "*$1*");
+  // Bold: **text** or __text__ → *text*
+  result = result.replace(/\*\*(.+?)\*\*/gs, "*$1*");
+  result = result.replace(/__(.+?)__/gs, "*$1*");
+  // Italic: *text* → _text_ (single asterisk remaining after bold pass)
+  result = result.replace(/(?<![*_])\*([^*\n]+)\*(?![*_])/g, "_$1_");
+  // Strikethrough: ~~text~~ → ~text~
+  result = result.replace(/~~(.+?)~~/g, "~$1~");
+  // Links: [text](url) → <url|text>
+  result = result.replace(/\[([^\]]+)\]\(([^)]+)\)/g, "<$2|$1>");
+  // Unordered list items: - item → • item
+  result = result.replace(/^[ \t]*[-*]\s+/gm, "• ");
+
+  // Restore protected segments
+  result = result.replace(
+    /\x00IC(\d+)\x00/g,
+    (_, i) => inlineCodes[parseInt(i)]
+  );
+  result = result.replace(
+    /\x00CB(\d+)\x00/g,
+    (_, i) => codeBlocks[parseInt(i)]
+  );
+
+  return result.trim();
+}
+
+// Splits a mrkdwn string into one or more section blocks, respecting Slack's 3000-char limit.
+function splitIntoSlackSections(
+  text: string
+): { type: "section"; text: { type: "mrkdwn"; text: string } }[] {
+  const MAX = 3000;
+  const blocks: { type: "section"; text: { type: "mrkdwn"; text: string } }[] =
+    [];
+  let remaining = text;
+  while (remaining.length > 0) {
+    if (remaining.length <= MAX) {
+      blocks.push({
+        type: "section",
+        text: { type: "mrkdwn", text: remaining },
+      });
+      break;
+    }
+    const slice = remaining.slice(0, MAX);
+    const splitAt = Math.max(slice.lastIndexOf("\n"), 1);
+    blocks.push({
+      type: "section",
+      text: { type: "mrkdwn", text: remaining.slice(0, splitAt).trimEnd() },
+    });
+    remaining = remaining.slice(splitAt).trimStart();
+  }
+  return blocks;
+}
 
 // GitHub Issues/PRs messages have a max size limit on the
 // message body payload.
@@ -66,6 +135,7 @@ type PublishOptions = {
   createGithubReleases: boolean;
   git: Git;
   cwd: string;
+  slackTitle?: string;
 };
 
 type PublishedPackage = { name: string; version: string };
@@ -87,6 +157,7 @@ export async function runPublish({
   octokit,
   createGithubReleases,
   cwd,
+  slackTitle = "New Release",
 }: PublishOptions): Promise<PublishResult> {
   let [publishCommand, ...publishArgs] = script.split(/\s+/);
 
@@ -154,62 +225,59 @@ export async function runPublish({
   }
 
   if (releasedPackages.length) {
-    const changelogs: any[] = [];
+    const packageBlocks = (
+      await Promise.all(
+        releasedPackages.map(async (pkg) => {
+          try {
+            const changelog = await fs.readFile(
+              path.join(pkg.dir, "CHANGELOG.md"),
+              "utf8"
+            );
+            const changelogEntry = getChangelogEntry(
+              changelog,
+              pkg.packageJson.version
+            );
+            const mrkdwn = markdownToSlackMrkdwn(changelogEntry.content);
 
-    for (const pkg of releasedPackages) {
-      try {
-        let changelogFileName = path.join(pkg.dir, "CHANGELOG.md");
-
-        let changelog = await fs.readFile(changelogFileName, "utf8");
-
-        let changelogEntry = getChangelogEntry(
-          changelog,
-          pkg.packageJson.version
-        );
-
-        const titleBlock = {
-          type: "section",
-          text: {
-            type: "mrkdwn",
-            text: `*${pkg.packageJson.name}@${pkg.packageJson.version}*`,
-          },
-        };
-
-        const res = await markdownToBlocks(
-          changelogEntry.content.replace(/###/g, "")
-        );
-
-        changelogs.push(titleBlock, ...res);
-      } catch (error) {
-        core.error(
-          `Error parsing changelog for ${pkg.packageJson.name}. Is the changelog file missing?`
-        );
-      }
-    }
-
-    const slackMessageJson = {
-      unfurl_links: false,
-      unfurl_media: false,
-      text: `*New Release*`,
-      blocks: [
-        {
-          type: "section",
-          text: {
-            type: "mrkdwn",
-            text: `*New Release*`,
-          },
-        },
-        ...changelogs,
-      ],
-    };
+            return [
+              { type: "divider" } as const,
+              {
+                type: "section" as const,
+                text: {
+                  type: "mrkdwn" as const,
+                  text: `*${pkg.packageJson.name}@${pkg.packageJson.version}*`,
+                },
+              },
+              ...splitIntoSlackSections(mrkdwn),
+            ];
+          } catch {
+            core.error(
+              `Error parsing changelog for ${pkg.packageJson.name}. Is the changelog file missing?`
+            );
+            return [];
+          }
+        })
+      )
+    ).flat();
 
     return {
       published: true,
-      publishedPackages: releasedPackages.map((pkg) => ({
-        name: pkg.packageJson.name,
-        version: pkg.packageJson.version,
+      publishedPackages: releasedPackages.map(({ packageJson }) => ({
+        name: packageJson.name,
+        version: packageJson.version,
       })),
-      publishedReleaseNotes: slackMessageJson,
+      publishedReleaseNotes: {
+        unfurl_links: false,
+        unfurl_media: false,
+        text: slackTitle,
+        blocks: [
+          {
+            type: "header",
+            text: { type: "plain_text", text: slackTitle, emoji: true },
+          },
+          ...packageBlocks,
+        ],
+      },
     };
   }
 

@@ -24,6 +24,10 @@ inputs:
   title:
     description: The pull request title. Default to `Version Packages`
     required: false
+  slack-title:
+    description: "The title shown in the Slack release notification. Defaults to `New Release`"
+    required: false
+    default: "New Release"
   setupGitUser:
     description: Sets up the git user for commits as `"github-actions[bot]"`. Default to `true`
     required: false

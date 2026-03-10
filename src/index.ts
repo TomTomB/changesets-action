@@ -121,6 +121,7 @@ const getOptionalInput = (name: string) => core.getInput(name) || undefined;
         octokit,
         createGithubReleases: core.getBooleanInput("createGithubReleases"),
         cwd,
+        slackTitle: getOptionalInput("slack-title"),
       });
 
       if (result.published) {
