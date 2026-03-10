@@ -1,5 +1,11 @@
 # @changesets/action
 
+## 1.7.3
+
+### Patch Changes
+
+- [`9eaf2ec`](https://github.com/changesets/action/commit/9eaf2ec5bce276b00bd94e43f2163493a9191c28) Thanks [@TomTomB](https://github.com/TomTomB)! - Fix slack message generation
+
 ## 1.7.2
 
 ### Patch Changes
