@@ -1,5 +1,11 @@
 # @changesets/action
 
+## 1.7.4
+
+### Patch Changes
+
+- [`6ecf282`](https://github.com/changesets/action/commit/6ecf2823beb3493bb7f4cd6cdeff581668c6760d) Thanks [@TomTomB](https://github.com/TomTomB)! - Cleanup
+
 ## 1.7.3
 
 ### Patch Changes
